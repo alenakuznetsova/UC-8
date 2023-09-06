@@ -6,7 +6,7 @@ const List = () => {
 
   return (
     <>
-      <h2>Submited data:</h2>
+      <h1>Submited data:</h1>
       <ul>
         {Object.entries(formData).map(([key, value]) => 
           <li key={key}>{key}: {value}</li>
