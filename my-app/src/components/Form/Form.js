@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import validator from 'validator';
 import './style.css';
 
+import { useDispatch } from 'react-redux'
+import { submit } from '../../features/form/formSlice';
+
 const Input = ({ forLabel, labelText, type, id, handleOnChange }) => {
   return (
     <div>
@@ -19,9 +22,12 @@ const initialState = {
 };
 
 const Form = () => {
+  const dispatch = useDispatch();
+
   const [formState, setFormState] = useState({
     fields: { ...initialState },
     errors: {},
+    isValid: false
   });
   
   const validationSchema = {
@@ -33,6 +39,7 @@ const Form = () => {
 
   const handleOnChange = (e) => {
     setFormState((prevState) => ({
+      ...prevState,
       fields: {
         ...prevState.fields,
         [e.target.name]: e.target.value
@@ -43,13 +50,19 @@ const Form = () => {
   useEffect(() => {
     setFormState((prevState) => ({
       ...prevState,
-      error: {
+      errors: {
         ...prevState.error,
         ...validationSchema
-      }
-    }))
+      },
+      isValid: Object.values(formState?.errors).some(val => val === false)
+    }));
+
   }, [formState.fields]);
-  
+
+  const handleSubmit = () => {
+    dispatch(submit(formState.fields));
+  };
+
   return (
     <form>
       <Input
@@ -80,7 +93,13 @@ const Form = () => {
         type='text'
         handleOnChange={handleOnChange}
       />
-      <input type="submit" value="Submit" />
+      <button
+        type='button'
+        disabled={formState.isValid}
+        onClick={handleSubmit}
+      >
+        Submit
+      </button>
     </form>
   );
 };
