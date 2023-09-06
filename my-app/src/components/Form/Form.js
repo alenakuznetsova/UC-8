@@ -80,6 +80,7 @@ const Form = () => {
         type='text'
         handleOnChange={handleOnChange}
       />
+      <input type="submit" value="Submit" />
     </form>
   );
 };
