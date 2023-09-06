@@ -1,34 +1,31 @@
 import { useEffect, useState } from 'react';
 import validator from 'validator';
+import { Input } from '../Input/Input';
 import './style.css';
 
 import { useDispatch } from 'react-redux'
 import { submit } from '../../features/form/formSlice';
 
-const Input = ({ forLabel, labelText, type, id, handleOnChange }) => {
-  return (
-    <div>
-      <label htmlFor={forLabel}>{labelText}</label>
-      <input name={id} type={type} id={id} onChange={handleOnChange} />
-    </div>
-  )
-};
-
-const initialState = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  message: ''
+const initialState = {  
+  fields: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: ''
+  },
+  errors: {
+    firstName: false,
+    lastName: false,
+    email: false,
+    message: false
+  },
+  isValid: false
 };
 
 const Form = () => {
   const dispatch = useDispatch();
 
-  const [formState, setFormState] = useState({
-    fields: { ...initialState },
-    errors: {},
-    isValid: false
-  });
+  const [formState, setFormState] = useState({ ...initialState });
   
   const validationSchema = {
     firstName: validator.isLength(formState.fields.firstName, 1),
@@ -54,7 +51,7 @@ const Form = () => {
         ...prevState.error,
         ...validationSchema
       },
-      isValid: Object.values(formState?.errors).some(val => val === false)
+      isValid: Object.values(formState?.errors).every(val => val === true) || false
     }));
 
   }, [formState.fields]);
@@ -95,7 +92,7 @@ const Form = () => {
       />
       <button
         type='button'
-        disabled={formState.isValid}
+        disabled={!formState.isValid}
         onClick={handleSubmit}
       >
         Submit

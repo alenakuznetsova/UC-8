@@ -3,26 +3,26 @@ import { createSlice } from '@reduxjs/toolkit'
 export const formSlice = createSlice({
   name: 'form',
   initialState: {
-    firstName: '',
-    lastName: '',
-    email: '',
-    message: ''
+    fields: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      message: '',
+    },
+    submited: false
   },
   reducers: {
-     submit: (state, action) => {
-      state = {
-        ...action.payload
-      }
-    }
+     submit: (state, action) => ({
+      ...state,
+      fields: { ...action.payload },      
+      submited: true
+    })
   }
 });
 
-export const { submit } = formSlice.actions;
+export const fieldsForm = (state) => state.form.fields;
+export const isSubmitedForm = (state) => state.form.submited;
 
-export const submitAsync = (amount) => (dispatch) => {
-  setTimeout(() => {
-    dispatch(submit(amount))
-  }, 1000)
-}
+export const { submit } = formSlice.actions;
 
 export default formSlice.reducer;
